@@ -1,0 +1,9 @@
+database.db
+settings_local.py
+*.pyc
+*.swp
+web/static/CACHE
+web/media/cache
+logs/*
+run/*
+venv/*

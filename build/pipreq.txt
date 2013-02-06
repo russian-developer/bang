@@ -1,0 +1,12 @@
+PIL
+Django==1.4.2
+MySQL-python==1.2.3
+South==0.7.6
+flup
+pytils==0.2.3
+raven==2.0.5
+-e hg+http://bitbucket.org/strugo/django-annoying#egg=django_annoying-dev
+-e git+git://github.com/django-mptt/django-mptt.git#egg=django-mptt
+-e git+git://github.com/feincms/feincms.git#egg=feincms
+-e git+git://github.com/jezdez/django_compressor.git#egg=django_compressor
+sorl-thumbnail
