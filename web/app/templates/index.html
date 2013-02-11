@@ -1,13 +1,18 @@
 {% extends "layout.html" %}
+{% load url from future %}
 
 {% block content %}
         <div id='hero' style='position:relative;'>
             <h1>Bang Your Friends</h1>
             <h2>Anonymously find friends who<br />are down for the night</h2>
             <p>Your friends will never know you're interested unless they are too!</p>
-            <a href='/auth/facebook'>
-                <img alt="Connect-with-facebook" src="/assets/connect-with-facebook-7d698956ce3e394cc91b0e6aa631732e.png" />
-            </a>
+            
+            <div class="soc_buttons">
+                <div class="soc_wrap">
+                    <a href="{% url 'socialauth_begin' 'vkontakte-oauth2' %}" >ВКонтакте</a>
+                </div>
+            </div>
+
             <h4>(Completely private & discreet until both friends are down to bang!)</h4>
             <p class='terms'>
             by signing in you agree to our <a href="/terms">terms of use</a><br />and <a href="/privacy">privacy policy</a>

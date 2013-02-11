@@ -67,14 +67,16 @@ MIDDLEWARE_CLASSES = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
-
     'django.core.context_processors.i18n',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.i18n',
     'django.contrib.messages.context_processors.messages',
-
+    'social_auth.context_processors.social_auth_by_name_backends',
+    'social_auth.context_processors.social_auth_backends',
+    'social_auth.context_processors.social_auth_by_type_backends',
+    'social_auth.context_processors.social_auth_login_redirect',
 )
 
 ROOT_URLCONF = 'urls'
@@ -83,7 +85,9 @@ TEMPLATE_DIRS = ()
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader')
+    'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.eggs.Loader',
+)
 
 INSTALLED_APPS = (
     'raven.contrib.django',
@@ -98,10 +102,10 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.humanize',
     'django.contrib.flatpages', # admin is set up in apps.common.admin
-
     'south',
     'sorl.thumbnail',
     'app',
+    'social_auth',
 )
 
 STATICFILES_FINDERS = (
@@ -118,14 +122,32 @@ EMAIL_PORT = 25
 EMAIL_USE_TLS = False
 EMAIL_FROM = 'c.slednev@gmail.com'
 
-AUTH_PROFILE_MODULE = 'apps.account.UserProfile'
-
 AUTHENTICATION_BACKENDS = (
-    'apps.account.auth.AuthBackend',
+    'social_auth.backends.twitter.TwitterBackend',
+    'social_auth.backends.facebook.FacebookBackend',
+    'social_auth.backends.contrib.vkontakte.VKontakteBackend',
+    'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
+    'django.contrib.auth.backends.ModelBackend',
 )
+
+TWITTER_CONSUMER_KEY         = ''
+TWITTER_CONSUMER_SECRET      = ''
+FACEBOOK_APP_ID              = ''
+FACEBOOK_API_SECRET          = ''
+VK_APP_ID                    = ''
+VK_API_SECRET                = ''
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/fuck/'
+
+#AUTH_PROFILE_MODULE = 'apps.account.UserProfile'
+
+#AUTHENTICATION_BACKENDS = (
+#    'apps.account.auth.AuthBackend',
+#)
 
 FILE_UPLOAD_PERMISSIONS = 0644
 
+DEFAULT_REDIRECT = 'app.view.index'
 
 try:
     from settings_local import *

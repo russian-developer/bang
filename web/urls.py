@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(django.contrib.admin.site.urls)),
     url(r'^$', 'app.views.index'),
     url(r'^fuck/$', 'app.views.fuck'),
+    url(r'^fuckit/(?P<uid>[0-9]+)/$', 'app.views.fuckit'),
+    url(r'', include('social_auth.urls')),
 )
 
 if settings.DEBUG or True:

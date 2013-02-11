@@ -1,0 +1,24 @@
+.soc_buttons {
+    width: 100%;
+    text-align: center;
+}
+
+.soc_wrap {
+    width: 128px;
+    margin: 0 auto;
+}
+
+#find #friends .fuck .action span {
+    width: 186px;
+    padding: 8px;
+    color: white;
+    background: #009bc5;
+    display: block;
+    text-align: center;
+    margin-left: 5px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+}
