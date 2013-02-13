@@ -137,6 +137,14 @@ FACEBOOK_API_SECRET          = ''
 VK_APP_ID                    = ''
 VK_API_SECRET                = ''
 
+VK_AUTH_EXTRA_ARGUMENTS = {
+    'scope': 'offline,wall',
+}
+
+VK_REQUEST_TOKEN_EXTRA_ARGUMENTS = {
+    'scope': 'offline,wall',
+}
+
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/fuck/'
 
 #AUTH_PROFILE_MODULE = 'apps.account.UserProfile'

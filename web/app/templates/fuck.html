@@ -1,6 +1,21 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
+{% if provider == 'facebook' %}
+    <style type="text/css">
+        #find #friends .fuck {
+            width: 210px !important;
+        }
+        #find #friends .fuck .action a {
+            width: 165px !important;
+        }
+        #find #friends .fuck .action span {
+            width: 165px !important;
+        }
+    </style>
+{% endif %}
+
 <div id='find'>
     <h1>Kiss Kiss Bang Bang</h1>
     <h2>Skip the chatting, and get to smacking those cheeks! Which of your friends do you want to bang?</h2>

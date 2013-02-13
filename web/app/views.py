@@ -12,6 +12,8 @@ from models import FuckIt
 
 class Wrap(object):
 
+    url = ''
+
     def __init__(self, user):
         self.user = user
         self.us = UserSocialAuth.objects.get(user=user)
@@ -22,13 +24,54 @@ class Wrap(object):
     def friends(self):
         return []
 
+    def provider(self):
+        return self.us.provider
+
+
+class FB(Wrap):
+
+    url = 'https://graph.facebook.com/me'
+
+    def profile(self):
+        url = '{0}?fields=name,id,picture,gender&access_token={1}'.format(self.url, self.us.extra_data['access_token'])
+        http = httplib2.Http()
+        response = http.request(url)
+        status = response[0]
+        if status['status'] == '200':
+            try:
+                prof = json.loads(str(response[1]))
+                prof['sex'] = prof['gender'] == 'male' and 1 or 2
+                prof['uid'] = prof['id']
+            except:
+                pass
+        return prof
+
+    def friends(self):
+        users = []
+        url = '{0}/friends?fields=first_name,last_name,name,id,picture,gender&access_token={1}'.format(self.url, self.us.extra_data['access_token'])
+        http = httplib2.Http()
+        response = http.request(url)
+        status = response[0]
+        if status['status'] == '200':
+            try:
+                j = json.loads(str(response[1]))
+                users = j['data']
+            except:
+                pass
+        print users
+        for u in users:
+            u['sex'] = u['gender'] == 'male' and 1 or 2
+            u['uid'] = u['id']
+            u['photo_big'] = u['picture']['data']['url'].replace('_q.jpg', '_n.jpg')
+        return users
+
 
 class VK(Wrap):
 
-    vk = 'https://api.vk.com/method/'
+    url = 'https://api.vk.com/method/'
 
     def profile(self):
-        url = '{0}getProfiles.json?fields=uid,first_name,last_name,sex&uid={1}&access_token={2}'.format(self.vk, self.us.uid, self.us.extra_data['access_token'])
+        url = '{0}getProfiles.json?fields=uid,first_name,last_name,sex&uid={1}&access_token={2}'.format(self.url, self.us.uid, self.us.extra_data['access_token'])
         http = httplib2.Http()
         response = http.request(url)
         status = response[0]
@@ -42,7 +85,7 @@ class VK(Wrap):
 
     def friends(self):
         users = []
-        url = '{0}getFriends.json?fields=uid,first_name,last_name,nickname,sex,photo_big&uid={1}&access_token={2}'.format(self.vk, self.us.uid, self.us.extra_data['access_token'])
+        url = '{0}getFriends.json?fields=uid,first_name,last_name,nickname,sex,photo_big&uid={1}&access_token={2}'.format(self.url, self.us.uid, self.us.extra_data['access_token'])
         http = httplib2.Http()
         response = http.request(url)
         status = response[0]
@@ -61,12 +104,16 @@ class Social(Wrap):
         w = Wrap(self.user)
         if self.us.provider == 'vkontakte-oauth2':
             w = VK(self.user)
+        if self.us.provider == 'facebook':
+            w = FB(self.user)
         return w.profile()
 
     def friends(self):
         w = Wrap(self.user)
         if self.us.provider == 'vkontakte-oauth2':
             w = VK(self.user)
+        if self.us.provider == 'facebook':
+            w = FB(self.user)
         return w.friends()
 
 
@@ -89,10 +136,12 @@ def fuck(request):
         elif sex == 2:
             sex = 1
         friends = []
+        provider = s.provider()
+        me = '_'.join([provider, prof['uid']])
         for f in s.friends():
             if int(f['sex']) == sex:
                 friends.append({
-                    'fuck': FuckIt.objects.filter(me=prof['uid'], fuckit=f['uid']).exists(),
+                    'fuck': FuckIt.objects.filter(me=me, fuckit='_'.join([provider, f['uid']])).exists(),
                     'first_name': f['first_name'], 
                     'last_name': f['last_name'],
                     'photo_big': f['photo_big'],
@@ -103,6 +152,7 @@ def fuck(request):
             'prof': prof,
             'sex': sex,
             'friends': friends,
+            'provider': s.provider()
         }
     else:
         return HttpResponseRedirect('/')
@@ -115,12 +165,17 @@ def fuckit(request, uid):
         if len(prof) == 0:
             return HttpResponseRedirect('/')
         friends = s.friends()
+        provider = s.provider()
+        f_uid = str(uid)
+        uid = '_'.join([provider, uid])
+        me = '_'.join([provider, prof['uid']])
         for f in friends:
-            if f['uid'] == uid:
-                if not FuckIt.objects.filter(me=prof['uid'], fuckit=uid).exists():
+            if str(f['uid']) == f_uid:
+                if not FuckIt.objects.filter(me=me, fuckit=uid).exists():
                     fk = FuckIt.objects.create(
-                        me = prof['uid'],
-                        fuckit = uid
+                        me = me,
+                        fuckit = uid,
+                        send = False
                     )
                     break
     return HttpResponseRedirect(reverse('app.views.fuck'))
