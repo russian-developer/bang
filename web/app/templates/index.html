@@ -9,7 +9,10 @@
             
             <div class="soc_buttons">
                 <div class="soc_wrap">
-                    <a href="{% url 'socialauth_begin' 'vkontakte-oauth2' %}" >ВКонтакте</a>
+                    <a href="{% url 'socialauth_begin' 'vkontakte-oauth2' %}?scope=offline,wall">ВКонтакте</a>
+                    <br />
+                    <br />
+                    <a href="{% url 'socialauth_begin' 'facebook' %}">FaceBook</a>
                 </div>
             </div>
 
